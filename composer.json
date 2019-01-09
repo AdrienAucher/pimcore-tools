@@ -2,7 +2,7 @@
   "name": "adrienaucher/pimcore-tool",
   "type": "library",
   "description": "External tool for Pimcore 5",
-  "version": "2.0.3",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Active Publishing Team",
