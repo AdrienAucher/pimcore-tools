@@ -65,7 +65,7 @@ class BundleGenerator extends BaseBundleGenerator
 
         $this->renderFile(
             'controller/WireframeController.example.php.twig',
-            $dir . '/Controller/' . $bundle->getBasename() . '.example.php',
+            $dir . '/Controller/Wireframe.example.php',
             $parameters
         );
 
