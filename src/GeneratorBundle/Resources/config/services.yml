@@ -19,5 +19,5 @@ services:
 #            - "plain_value"
 #            - "%parameter%"
 
-    GeneratorBundle\Command\:
+    ActivePublishing\GeneratorBundle\Command\:
         resource: '../../Command'
