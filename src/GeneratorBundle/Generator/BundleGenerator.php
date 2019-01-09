@@ -46,6 +46,12 @@ class BundleGenerator extends BaseBundleGenerator
         $routing->addResource($bundle->getName(), 'annotation');
 
         $this->renderFile(
+            'specificBundle/services.yml.twig',
+            $dir.'/Resources/config/services.yml',
+            $parameters
+        );
+
+        $this->renderFile(
             'specificBundle/Bundle.php.twig',
             $dir.'/'.$bundle->getName().'.php',
             $parameters
@@ -59,7 +65,7 @@ class BundleGenerator extends BaseBundleGenerator
 
         $this->renderFile(
             'controller/WireframeController.example.php.twig',
-            $dir . '/Controller/WireframeController.example.php',
+            $dir . '/Controller/' . $bundle->getBasename() . '.example.php',
             $parameters
         );
 

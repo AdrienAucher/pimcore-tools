@@ -19,7 +19,7 @@ use Pimcore\Http\Request\Resolver\ViewModelResolver;
 {% block class_definition %}
 class {{ namespace|trim('Bundle', 'right') }}Controller extends WireframeController
 {% endblock class_definition %}
-
+{
 {% block class_body %}
     public function ExampleAction(Request $request)
     {
