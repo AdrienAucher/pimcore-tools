@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace GenerateBundle\Generator;
+namespace ActivePublishing\GeneratorBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\BundleGenerator as BaseBundleGenerator;
 use Sensio\Bundle\GeneratorBundle\Manipulator\RoutingManipulator;
