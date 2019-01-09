@@ -24,7 +24,7 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\Console\Command\Command;
 
 
-class GenerateBundleCommand extends BaseGenerateBundleCommand
+class GeneratorBundleCommand extends BaseGenerateBundleCommand
 {
     /**
      * @inheritDoc
