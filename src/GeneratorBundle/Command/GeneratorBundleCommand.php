@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace ActivePublishing\GeneratorBundle\Command;
 
-use GenerateBundle\Command\Helper\QuestionHelper;
-use GenerateBundle\Generator\BundleGenerator;
-use GenerateBundle\Model\Bundle;
+use ActivePublishing\GeneratorBundle\Command\Helper\QuestionHelper;
+use ActivePublishing\GeneratorBundle\Generator\BundleGenerator;
+use ActivePublishing\GeneratorBundle\Model\Bundle;
 use Sensio\Bundle\GeneratorBundle\Command\GenerateBundleCommand as BaseGenerateBundleCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
