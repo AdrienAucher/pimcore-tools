@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * Active Publishing - All right reserved
+ *   Full copyright and license information is available in
+ *   LICENSE.md which is distributed with this source code.
+ *
+ * @copyright Copyright (c) Active Publishing (https://activepublishing.fr)
+ * @license Creative Common CC BY NC-ND 4.0
+ * @author Active Publishing <contact@active-publishing.fr>
+*/
+
+namespace {{ bundle }}\Document\Areabrick;
+
+use Pimcore\Extension\Document\Areabrick\AbstractTemplateAreabrick;
+
+/**
+* Class
+*/
+class template_name extends AbstractTemplateAreabrick
+    {
+    /**
+    * @var bool
+    */
+    public $_wireframeExt = true;
+    /**
+    * @var string
+    */
+    public $_wireframeType = "renderlet";
+
+    /**
+    * @return string
+    */
+    public function getName()
+    {
+        return '';
+    }
+
+    /**
+    * @return string
+    */
+    public function getDescription()
+    {
+        return '';
+    }
+
+    /**
+    * @return string
+    */
+    public function getTemplateLocation()
+    {
+        return static::TEMPLATE_LOCATION_BUNDLE;
+    }
+
+    /**
+    * @return bool
+    */
+    public function hasEditTemplate()
+    {
+        return false;
+    }
+
+}

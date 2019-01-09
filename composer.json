@@ -1,0 +1,26 @@
+{
+  "name": "adrienaucher/pimcore-tool",
+  "type": "library",
+  "description": "External tool for Pimcore 5",
+  "version": "2.0.3",
+  "authors": [
+    {
+      "name": "Active Publishing Team",
+      "email": "contact@active-publishing.fr",
+      "homepage": "http://www.active-publishing.fr/",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ActivePublishing\\": "src/"
+    }
+  },
+  "require": {
+    "mikehaertl/php-pdftk": "^0.4",
+    "mikehaertl/phpwkhtmltopdf": "^2.3",
+    "phpoffice/phpspreadsheet": "^1.1",
+    "erusev/parsedown": "^1.7",
+    "erusev/parsedown-extra": "^0.7"
+  }
+}

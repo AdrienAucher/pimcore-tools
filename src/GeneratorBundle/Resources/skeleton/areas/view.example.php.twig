@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * Active Publishing - All right reserved
+ *   Full copyright and license information is available in
+ *   LICENSE.md which is distributed with this source code.
+ *
+ * @copyright Copyright (c) Active Publishing (https://activepublishing.fr)
+ * @license Creative Common CC BY NC-ND 4.0
+ * @author Active Publishing <contact@active-publishing.fr>
+*/
+
+{% block html_body %}
+echo $this->renderlet("template_name",[
+"controller" => "controller_name",
+"action" => "action_name", //Replace upper cases by a hyphen e.g. myAction -> my-action
+"bundle" => "{{ bundle }}",
+"documentId" => $this->viewModels[0]->getParameters()->get('documentId'),
+"baseUrl" => $this->viewModels[0]->getParameters()->get('baseUrl'),
+"thumbnail" => $this->viewModels[0]->getParameters()->get('thumbnail'),
+"pageLock" => $this->viewModels[0]->getParameters()->get('pageLock'),
+"background" => $this->viewModels[0]->getParameters()->get('background'),
+"pageWidth" => $this->viewModels[0]->getParameters()->get('pageWidth'),
+"pageHeight" => $this->viewModels[0]->getParameters()->get('pageHeight'),
+"pageWidthLandmark" => $this->viewModels[0]->getParameters()->get('pageWidthLandmark'),
+"pageHeightLandmark" => $this->viewModels[0]->getParameters()->get('pageHeightLandmark')
+]);
+{% endblock html_body %}

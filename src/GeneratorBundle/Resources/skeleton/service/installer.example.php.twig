@@ -1,0 +1,235 @@
+<?php
+/**
+ * Active Publishing - All right reserved
+ *   Full copyright and license information is available in
+ *   LICENSE.md which is distributed with this source code.
+ *
+ * @copyright Copyright (c) Active Publishing (https://activepublishing.fr)
+ * @license Creative Common CC BY NC-ND 4.0
+ * @author Active Publishing <contact@active-publishing.fr>
+*/
+namespace {{ bundle }}\Service;
+
+use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
+use PackageVersions\Versions;
+
+use ActivePublishing\Tool\Installer as AP_Installer;
+use ActivePublishing\Tool\Config as AP_Config;
+use ActivePublishing\Tool\ApTool;
+use {{ bundle }}\{{ bundle }} as Bundle;
+
+/**
+* Class Installer
+* @package ActiveSearchBundle\Service
+*/
+class Installer extends AbstractInstaller
+{
+    /**
+    * @var array
+    */
+    private $_composerAddiction = [
+        'activepublishing/pimcore-tool' => "2.0.3"
+    ];
+
+    /**
+    * @var array
+    */
+    private $_defaultConfig = [
+        "installed" => true,
+        "bundleVersion" => Bundle::BUNDLE_VERSION,
+        "bundleRevision" => Bundle::BUNDLE_REVISION
+    ];
+
+    /**
+    * Install
+    */
+    public function install()
+    {
+        try {
+            $this->checkComposerAddiction();
+
+            if (!AP_Installer::allowInstallFromPimcoreVersion(Bundle::PIMCORE_MIN_VERSION)) {
+                return $this->outputWriter->write("Pimcore >=" . Bundle::PIMCORE_MIN_VERSION . " is required.");
+            };
+
+            AP_Installer\Definition::installClasses(Bundle::BUNDLE_ID);
+            AP_Config::setConfig(Bundle::BUNDLE_ID, $this->_defaultConfig);
+
+            return $this->outputWriter->write("Installation completed! Please don't forget to reload pimcore.");
+        } catch (\Exception $ex) {
+            return $this->outputWriter->write("Installation failed! " . $ex->getMessage());
+        }
+    }
+
+    /**
+    * Uninstall bundle
+    */
+    public function uninstall()
+    {
+    try {
+        $this->checkComposerAddiction();
+    } catch (\Exception $ex) {
+        return $this->outputWriter->write("Uninstall failed! " . $ex->getMessage());
+    }
+
+    $config = AP_Config::getConfig(Bundle::BUNDLE_ID);
+    if($config) {
+        $config["installed"] = false;
+        AP_Config::setConfig(Bundle::BUNDLE_ID, $config);
+    }
+
+        return $this->outputWriter->write("Uninstall completed! Please don't forget to reload pimcore.");
+    }
+
+    /**
+    * Update bundle
+    */
+    public function update()
+    {
+        try {
+            $this->checkComposerAddiction();
+
+            $config = AP_Config::getConfig(Bundle::BUNDLE_ID);
+            if (!$config) {
+                return $this->outputWriter->write("Update failed! Config file is not writable.");
+            }
+
+            $lastRevision = array_key_exists('revisionInstalled', $config) ? intval($config['revisionInstalled']) : 100;
+            $bundleRevision = intval(BUNDLE::BUNDLE_REVISION);
+
+            for ($i = $lastRevision+1; $i <= $bundleRevision; $i++) {
+                $pathUpdateScript = AP_Installer::getUpdateScriptsPath(Bundle::BUNDLE_ID)
+                . DIRECTORY_SEPARATOR . $i . ".php";
+                if (file_exists($pathUpdateScript)) {
+                    ApTool::includeIfExists($pathUpdateScript);
+                }
+            }
+
+            $config["revisionInstalled"] = $bundleRevision;
+            AP_Config::setConfig(Bundle::BUNDLE_ID, $config);
+
+            return $this->outputWriter->write("Update completed! Please don't forget to reload pimcore.");
+        } catch (\Exception $ex) {
+            return $this->outputWriter->write("Update failed! " . $ex->getMessage());
+        }
+    }
+
+    /**
+    * @return bool
+    */
+    public function isInstalled()
+    {
+        $name = str_replace("bundle", "", mb_strtolower(Bundle::BUNDLE_ID));
+        $path = PIMCORE_CONFIGURATION_DIRECTORY . '/' . $name . '.php';
+
+        if (file_exists($path)) {
+            $config = include $path;
+        if (is_array($config) && !empty($config)) {
+            return $config["installed"];
+        }
+    }
+
+    return false;
+    }
+
+    /**
+    * @return bool
+    */
+    public function canBeInstalled()
+    {
+        $name = str_replace("bundle", "", mb_strtolower(Bundle::BUNDLE_ID));
+        $path = PIMCORE_CONFIGURATION_DIRECTORY . '/' . $name . '.php';
+
+        if (file_exists($path)) {
+            $config = include $path;
+        if(is_array($config) && !empty($config)){
+            return (true != $config["installed"]);
+        }
+    }
+
+    return true;
+    }
+
+    /**
+    * @return bool
+    */
+    public function canBeUninstalled()
+    {
+        $name = str_replace("bundle", "", mb_strtolower(Bundle::BUNDLE_ID));
+        $path = PIMCORE_CONFIGURATION_DIRECTORY . '/' . $name . '.php';
+
+        if (file_exists($path)) {
+            $config = include $path;
+        if(is_array($config) && !empty($config)){
+            return (true == $config["installed"]);
+        }
+    }
+
+    return true;
+    }
+
+    /**
+    * @return bool
+    */
+    public function canBeUpdated()
+    {
+        try {
+            $this->checkComposerAddiction();
+
+            $config = AP_Config::getConfig(Bundle::BUNDLE_ID);
+            if ($config) {
+                $bundleRevision = intval(BUNDLE::BUNDLE_REVISION);
+                $lastRevision = array_key_exists('revisionInstalled', $config)
+                    ? intval($config['revisionInstalled'])
+                    : 100;
+
+                if ($lastRevision < $bundleRevision) {
+                    for ($i = $lastRevision + 1; $i <= $bundleRevision; $i++) {
+                        $pathUpdateScript = AP_Installer::getUpdateScriptsPath(Bundle::BUNDLE_ID)
+                        . DIRECTORY_SEPARATOR . $i . ".php";
+                        if (file_exists($pathUpdateScript)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $ex) {}
+
+        return false;
+    }
+
+    /**
+    * @return bool
+    */
+    public function needsReloadAfterInstall()
+    {
+        return true;
+    }
+
+    /**
+    * @throws \Exception
+    */
+    public function checkComposerAddiction ()
+    {
+        if (!empty($this->_composerAddiction)) {
+            foreach ($this->_composerAddiction as $packageName => $minimalVersion) {
+                $currentVersion = explode("@", Versions::getVersion($packageName))[0];
+                $currentVersion = str_replace("v", "", $currentVersion);
+
+                $partsCurrentVersion = explode(".", $currentVersion);
+                $partsMinimalVersion = explode(".", $minimalVersion);
+
+                if (intval($partsCurrentVersion[0]) < intval($partsMinimalVersion[0])) {
+                    if (intval($partsCurrentVersion[1]) < intval($partsMinimalVersion[1])) {
+                        if (intval($partsCurrentVersion[2]) < intval($partsMinimalVersion[2])) {
+                            throw new \Exception(
+                            'Required package "' . $packageName . ': >= ' . $minimalVersion . '"!'
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}

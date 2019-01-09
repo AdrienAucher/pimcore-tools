@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * Active Publishing - All right reserved
+ *   Full copyright and license information is available in
+ *   LICENSE.md which is distributed with this source code.
+ *
+ * @copyright Copyright (c) Active Publishing (https://activepublishing.fr)
+ * @license Creative Common CC BY NC-ND 4.0
+ * @author Active Publishing <contact@active-publishing.fr>
+*/
+
+{% block use_statements %}
+use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ bundle }} extends AbstractPimcoreBundle
+{% endblock class_definition %}
+{
+{% block class_body %}
+    const COMPOSER_PACKAGE_NAME  = "activepublishing/bundle-{{ bundle_basename|lower }}";
+    const BUNDLE_ID              = "{{ bundle }}";
+    const BUNDLE_NAME            = "{{ bundle_basename }}";
+    const BUNDLE_DESCRIPTION     = "";
+    const BUNDLE_VERSION         = "1.0.0";
+    const BUNDLE_REVISION        = 1;
+    const PIMCORE_MIN_VERSION    = "{{ pimcore_version }}";
+
+    /**
+    * @return string
+    */
+    protected function getComposerPackageName(): string
+    {
+        return self::COMPOSER_PACKAGE_NAME;
+    }
+
+    /**
+    * @return string
+    */
+    public function getNiceName()
+    {
+        return self::BUNDLE_NAME;
+    }
+
+    /**
+    * @return string
+    */
+    public function getDescription()
+    {
+        return self::BUNDLE_DESCRIPTION;
+    }
+
+    /**
+    * @return string
+    */
+    public function getVersion()
+    {
+        return self::BUNDLE_VERSION;
+    }
+
+    public function getJsPaths()
+    {
+        return [
+            '/bundles/{{ bundle_basename|lower }}/js/pimcore/startup.js'
+        ];
+    }
+
+    /**
+    * @return null|object|\Pimcore\Extension\Bundle\Installer\InstallerInterface|void
+    */
+    public function getInstaller()
+    {
+        return $this->container->get(Service\Installer::class);
+    }
+
+{% endblock class_body %}
+}
